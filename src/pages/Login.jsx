@@ -1,3 +1,4 @@
+// para testar no remoto
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { createUser } from '../services/userAPI';
