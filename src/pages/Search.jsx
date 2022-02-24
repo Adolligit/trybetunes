@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Header from './Header';
-import { searchAlbumsAPI } from '../services/searchAlbumsAPI';
+// import { searchAlbumsAPI } from '../services/searchAlbumsAPI';
 
 class Search extends Component {
   constructor() {
