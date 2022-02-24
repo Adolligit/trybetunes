@@ -11,7 +11,7 @@ class Login extends Component {
       name: '',
       offBtn: true,
       loading: false,
-      redirect: undefined,
+      redirect: false,
     };
 
     this.changeName = this.changeName.bind(this);
@@ -56,11 +56,8 @@ class Login extends Component {
 
   async saveName(name) {
     this.setState({ loading: true });
-    createUser({ name })
-      .then(() => this.setState({
-        loading: false,
-        redirect: <Redirect to="/search" />,
-      }));
+    await createUser({ name });
+    this.setState({ loading: true, redirect: <Redirect to="/search" /> });
   }
 
   render() {
@@ -71,7 +68,7 @@ class Login extends Component {
         {
           (loading) ? <Loading /> : this.returnForm()
         }
-        { redirect }
+        { (redirect) }
       </div>
     );
   }
