@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import getMusics from '../services/musicsAPI';
+import MusicCard from './MusicCard';
 
 class Album extends Component {
   constructor() {
     super();
     this.state = {
       author: '',
+      album: '',
       musics: [],
     };
   }
@@ -17,25 +19,26 @@ class Album extends Component {
 
     getMusics(id)
       .then((response) => {
-        response.shift();
         this.setState({
           author: response[0].artistName,
-          musics: response,
+          album: response[0].collectionName,
+          musics: response.slice(1),
         });
       });
   }
 
   render() {
-    const { author, musics } = this.state;
+    const { author, album, musics } = this.state;
     return (
       <div data-testid="page-album">
         <Header />
         <fieldset>
           <h1 data-testid="artist-name">{ author }</h1>
+          <p data-testid="album-name">{ album }</p>
           <ul>
             {
-              musics.map(({ trackName }) => (
-                <li key={ trackName }>{ trackName }</li>
+              musics.map((music) => (
+                <MusicCard key={ music.trackId } music={ music } />
               ))
             }
           </ul>
@@ -46,7 +49,11 @@ class Album extends Component {
 }
 
 Album.propTypes = {
-  match: PropTypes.objectOf(),
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }),
+  }),
 }.isRequired;
 
 export default Album;
