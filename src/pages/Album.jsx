@@ -12,9 +12,16 @@ class Album extends Component {
       album: '',
       musics: [],
     };
+
+    this.getMusicsFromAlbum = this.getMusicsFromAlbum.bind(this);
   }
 
   componentDidMount() {
+    this.getMusicsFromAlbum();
+    // localStorage.favorite_songs = '[]'; // fix error: "favoriteSongs is not iterable", favoriteSongsAPI.js:34
+  }
+
+  getMusicsFromAlbum() {
     const { match: { params: { id } } } = this.props;
 
     getMusics(id)
