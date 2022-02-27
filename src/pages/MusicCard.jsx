@@ -15,12 +15,21 @@ class MusicCard extends Component {
   }
 
   favoriteSong(music) {
-    this.setState({ loading: true });
-    addSong(music)
-      .then(() => this.setState((state) => ({
-        loading: false,
-        marked: !state.marked,
-      })));
+    const favoriteSongsStorage = JSON.parse(localStorage.favorite_songs);
+    const trackIdFavorites = favoriteSongsStorage.map(({ trackId }) => trackId);
+
+    if (!trackIdFavorites.includes(music.trackId)) {
+      this.setState({ loading: true });
+      addSong(music)
+        .then(() => this.setState((state) => ({
+          loading: false,
+          marked: !state.marked,
+        })));
+    } else {
+      localStorage.favorite_songs = JSON.stringify(
+        favoriteSongsStorage.filter(({ trackId }) => trackId !== music.trackId),
+      );
+    }
   }
 
   render() {
@@ -49,7 +58,7 @@ class MusicCard extends Component {
                   data-testid={ `checkbox-music-${music.trackId}` }
                   type="checkbox"
                   onClick={ () => this.favoriteSong(music) }
-                  checked={ marked }
+                  defaultChecked={ marked }
                 />
               )
           }
@@ -61,7 +70,11 @@ class MusicCard extends Component {
 }
 
 MusicCard.propTypes = {
-  music: PropTypes.objectOf().isRequired,
+  music: PropTypes.shape({
+    trackName: PropTypes.string,
+    previewUrl: PropTypes.string,
+    trackId: PropTypes.number,
+  }).isRequired,
 };
 
 export default MusicCard;
