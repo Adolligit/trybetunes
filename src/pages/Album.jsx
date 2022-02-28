@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import getMusics from '../services/musicsAPI';
-import MusicCard from './MusicCard';
+import MusicCard from '../components/MusicCard';
 
 class Album extends Component {
   constructor() {
@@ -35,6 +35,7 @@ class Album extends Component {
 
   render() {
     const { author, album, musics } = this.state;
+
     return (
       <div data-testid="page-album">
         <Header />
