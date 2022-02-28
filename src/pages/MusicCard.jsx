@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Loading from '../components/Loading';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 
 class MusicCard extends Component {
   constructor() {
@@ -11,11 +11,16 @@ class MusicCard extends Component {
       marked: false,
     };
 
-    this.favoriteSong = this.favoriteSong.bind(this);
+    this.setFavoriteSong = this.setFavoriteSong.bind(this);
+    this.getFavoriteSong = this.getFavoriteSong.bind(this);
   }
 
-  favoriteSong(music) {
-    const favoriteSongsStorage = JSON.parse(localStorage.favorite_songs);
+  componentDidMount() {
+    this.getFavoriteSong();
+  }
+
+  setFavoriteSong(music) {
+    const favoriteSongsStorage = JSON.parse(localStorage.favorite_songs); // pegar localStorage com "await getFavoriteSongs" deu erro
     const trackIdFavorites = favoriteSongsStorage.map(({ trackId }) => trackId);
 
     if (!trackIdFavorites.includes(music.trackId)) {
@@ -26,10 +31,20 @@ class MusicCard extends Component {
           marked: !state.marked,
         })));
     } else {
-      localStorage.favorite_songs = JSON.stringify(
-        favoriteSongsStorage.filter(({ trackId }) => trackId !== music.trackId),
-      );
+      removeSong(music);
     }
+  }
+
+  async getFavoriteSong() {
+    const { music } = this.props;
+    const response = await getFavoriteSongs();
+    const anyoneMarked = response.some(({ trackId }) => trackId === music.trackId); // bool
+
+    console.log(anyoneMarked);
+
+    this.setState((state) => ({
+      marked: anyoneMarked,
+    }));
   }
 
   render() {
@@ -57,8 +72,8 @@ class MusicCard extends Component {
                 <input
                   data-testid={ `checkbox-music-${music.trackId}` }
                   type="checkbox"
-                  onClick={ () => this.favoriteSong(music) }
-                  defaultChecked={ marked }
+                  checked={ marked }
+                  onClick={ () => this.setFavoriteSong(music) }
                 />
               )
           }

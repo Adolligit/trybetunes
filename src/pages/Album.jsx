@@ -18,7 +18,6 @@ class Album extends Component {
 
   componentDidMount() {
     this.getMusicsFromAlbum();
-    // localStorage.favorite_songs = '[]'; // fix error: "favoriteSongs is not iterable", favoriteSongsAPI.js:34
   }
 
   getMusicsFromAlbum() {
