@@ -8,21 +8,25 @@ class Favorites extends Component {
   constructor() {
     super();
     this.state = {
-      loading: false,
+      loading: true,
       musics: [],
     };
+
+    this.renderMusics = this.renderMusics.bind(this);
   }
 
   componentDidMount() {
+    this.renderMusics();
+  }
+
+  renderMusics() {
+    this.setState({ loading: true });
     getFavoriteSongs()
       .then((response) => this.setState({
         musics: response,
+        loading: false,
       }));
   }
-
-  // componentWillUnmount() {
-  //   console.log("atualizou");
-  // }
 
   render() {
     const { musics, loading } = this.state;
@@ -37,7 +41,11 @@ class Favorites extends Component {
               (loading)
                 ? <Loading />
                 : musics.map((music) => (
-                  <MusicCard key={ music.trackId } music={ music } />
+                  <MusicCard
+                    key={ music.trackId }
+                    music={ music }
+                    action={ this.renderMusics }
+                  />
                 ))
             }
           </ul>

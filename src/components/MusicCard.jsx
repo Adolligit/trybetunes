@@ -20,6 +20,7 @@ class MusicCard extends Component {
   }
 
   async setFavoriteSong(music) {
+    const { action } = this.props;
     const favoriteSongsStorage = JSON.parse(localStorage.favorite_songs); // pegar localStorage com "await getFavoriteSongs" deu erro
     const trackIdFavorites = favoriteSongsStorage.map(({ trackId }) => trackId);
 
@@ -34,7 +35,7 @@ class MusicCard extends Component {
     this.setState((state) => ({
       loading: false,
       marked: !state.marked,
-    }));
+    }), await action());
   }
 
   async getFavoriteSong() {
@@ -61,13 +62,14 @@ class MusicCard extends Component {
             .
           </audio>
         </div>
-        <label htmlFor="favorita">
+        <label htmlFor="Favorita">
           Favorita
           {
             (loading)
               ? <Loading />
               : (
                 <input
+                  id="Favorita"
                   data-testid={ `checkbox-music-${music.trackId}` }
                   type="checkbox"
                   checked={ marked }
@@ -88,6 +90,7 @@ MusicCard.propTypes = {
     previewUrl: PropTypes.string,
     trackId: PropTypes.number,
   }).isRequired,
+  action: PropTypes.func.isRequired,
 };
 
 export default MusicCard;
