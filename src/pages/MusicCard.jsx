@@ -19,32 +19,30 @@ class MusicCard extends Component {
     this.getFavoriteSong();
   }
 
-  setFavoriteSong(music) {
+  async setFavoriteSong(music) {
     const favoriteSongsStorage = JSON.parse(localStorage.favorite_songs); // pegar localStorage com "await getFavoriteSongs" deu erro
     const trackIdFavorites = favoriteSongsStorage.map(({ trackId }) => trackId);
 
+    this.setState({ loading: true });
+
     if (!trackIdFavorites.includes(music.trackId)) {
-      this.setState({ loading: true });
-      addSong(music)
-        .then(() => this.setState((state) => ({
-          loading: false,
-          marked: !state.marked,
-        })));
+      await addSong(music);
     } else {
-      removeSong(music);
+      await removeSong(music);
     }
+
+    this.setState((state) => ({
+      loading: false,
+      marked: !state.marked,
+    }));
   }
 
   async getFavoriteSong() {
     const { music } = this.props;
     const response = await getFavoriteSongs();
-    const anyoneMarked = response.some(({ trackId }) => trackId === music.trackId); // bool
+    const anyoneMarked = response.some(({ trackId }) => trackId === music.trackId);
 
-    console.log(anyoneMarked);
-
-    this.setState((state) => ({
-      marked: anyoneMarked,
-    }));
+    this.setState({ marked: anyoneMarked });
   }
 
   render() {
@@ -73,7 +71,7 @@ class MusicCard extends Component {
                   data-testid={ `checkbox-music-${music.trackId}` }
                   type="checkbox"
                   checked={ marked }
-                  onClick={ () => this.setFavoriteSong(music) }
+                  onChange={ () => this.setFavoriteSong(music) }
                 />
               )
           }
